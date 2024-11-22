@@ -1,0 +1,11 @@
+mark {
+  background-color: yellow;
+  color: black;
+  padding: 0.2em;
+  border-radius: 0.2em;
+  transition: background-color 0.2s ease;
+}
+
+mark:hover {
+  background-color: #ffed4a;
+} 
