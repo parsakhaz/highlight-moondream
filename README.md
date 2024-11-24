@@ -3,6 +3,10 @@
 ## Overview
 A Chrome extension that automatically highlights mentions of Moondream, Vision Language Models (VLMs), and related AI vision technologies across any webpage. The extension uses intelligent text detection to highlight terms while maintaining good performance.
 
+![Before highlighting](before.png)
+![After highlighting](after.png)
+
+
 ## Features
 - Real-time highlighting of AI vision-related terms
 - Case-insensitive matching
