@@ -17,7 +17,12 @@ A Chrome extension that automatically highlights mentions of Moondream, Vision L
 
 ## Installation
 1. Clone this repository or download the source code
-2. Open Chrome and navigate to `chrome://extensions/`
+2. Open your browser's extension page:
+   - Chrome: Navigate to `chrome://extensions/`
+   - Edge: Navigate to `edge://extensions/`
+   - Brave: Navigate to `brave://extensions/`
+   - Opera: Navigate to `opera://extensions/`
+   - Other Chromium browsers: Navigate to `[browser]://extensions/`
 3. Enable "Developer mode" in the top right
 4. Click "Load unpacked" and select the extension directory
 
