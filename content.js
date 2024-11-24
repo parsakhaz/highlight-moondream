@@ -1,3 +1,81 @@
+// Add at the beginning of the file
+let isHighlightingEnabled = true;
+let hasInitialized = false;
+
+// Check if highlighting is enabled for this domain
+async function checkDomainStatus() {
+  try {
+    const domain = window.location.hostname;
+    const { disabledDomains = [] } = await chrome.storage.sync.get('disabledDomains');
+    isHighlightingEnabled = !disabledDomains.includes(domain);
+    
+    // If highlighting is disabled, remove existing highlights
+    if (!isHighlightingEnabled) {
+      removeHighlights();
+    }
+    return isHighlightingEnabled;
+  } catch (error) {
+    console.error('Error checking domain status:', error);
+    return true; // Default to enabled on error
+  }
+}
+
+// Function to remove all highlights
+function removeHighlights() {
+  try {
+    const marks = document.querySelectorAll('mark');
+    marks.forEach(mark => {
+      const text = mark.textContent;
+      mark.replaceWith(text);
+    });
+    
+    // Clear the highlighted status from containers
+    const containers = document.querySelectorAll('.highlighted');
+    containers.forEach(container => {
+      container.classList.remove('highlighted');
+    });
+  } catch (error) {
+    console.error('Error removing highlights:', error);
+  }
+}
+
+// Function to initialize highlighting
+async function initializeHighlighting() {
+  if (hasInitialized) return;
+  
+  const isEnabled = await checkDomainStatus();
+  if (isEnabled) {
+    observeTextContainers();
+  }
+  hasInitialized = true;
+}
+
+// Update the message listener to handle toggle more robustly
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === 'toggleHighlighting') {
+    isHighlightingEnabled = message.isEnabled;
+    hasInitialized = false; // Reset initialization flag
+    
+    if (isHighlightingEnabled) {
+      removeHighlights(); // Clear existing highlights first
+      initializeHighlighting(); // Re-initialize highlighting
+    } else {
+      removeHighlights();
+    }
+    
+    sendResponse({ success: true }); // Acknowledge receipt of message
+  }
+  return true; // Keep message channel open for async response
+});
+
+// Update the initial setup
+document.addEventListener('DOMContentLoaded', initializeHighlighting);
+
+// If DOMContentLoaded already fired, initialize immediately
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+  initializeHighlighting();
+}
+
 // List of terms to highlight
 const terms = [
   // Core Moondream terms
@@ -147,6 +225,8 @@ function isVisible(element) {
 
 // Function to highlight text nodes
 function highlightText(node) {
+  if (!isHighlightingEnabled) return;
+  
   try {
     // Skip if node is invalid or in excluded elements
     if (!node || !node.parentElement) return;
@@ -237,11 +317,6 @@ function handleDynamicContent(mutations) {
     console.error('Error in mutation observer:', error);
   }
 }
-
-// Initial setup when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-  observeTextContainers();
-});
 
 // Observe DOM changes for dynamic content
 const mutationObserver = new MutationObserver(handleDynamicContent);
