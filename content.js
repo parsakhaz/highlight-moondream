@@ -98,6 +98,16 @@ const terms = [
   "visual language models",
   "visual-language model",
   "visual-language models",
+  "small language model",
+  "small-language model",
+  "small language models", 
+  "small-language models",
+  "SLM",
+  "SLMs",
+  "vision capabilities",
+  "vision capability",
+  "visual capabilities",
+  "visual capability",
   
   // Related Vision AI terms
   "multimodal AI",
